@@ -5,8 +5,9 @@ CREATE TABLE users{
     password VARCHAR(100),
     min_age SMALLINT CHECK (min_age >= 0),
     max_age SMALLINT CHECK (max_age >= min_age AND max_age <= 120),
-    college-name VARCHAR(100),
-    test-attended ARRAY
+    college_name VARCHAR(100),
+    test_attended ARRAY,
+    created_at TIMESTAMP
 };
 
 CREATE TABLE user_token (

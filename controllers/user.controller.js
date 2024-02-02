@@ -2,11 +2,10 @@ require("dotenv").config();
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const pool = require("../config/db.js");
-const { Snowflake } = require("@theinternetfolks/snowflake");
 const generateUserToken = require("../utils/generateUserToken.js");
 
 const signup = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, min_age, max_age, college_name, test_attended } = req.body;
   try {
     if (!name || name.length < 2) {
       return res
@@ -26,15 +25,14 @@ const signup = async (req, res) => {
 
     const timestamp = new Date();
     console.log(req.body);
-    const userId = Snowflake.generate();
 
     const hashedPassword = await bcrypt.hash(
       password,
       Number(process.env.SALT)
     );
 
-    const userQuery = `INSERT INTO users(id, name, email, password, created_at) VALUES ($1,$2,$3,$4,$5) RETURNING *`;
-    const userQueryParams = [userId, name, email, hashedPassword, timestamp];
+    const userQuery = `INSERT INTO users(id, name, email, password, min_age, max_age, college_name, test_attended, created_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`;
+    const userQueryParams = [userId, name, email, hashedPassword, min_age, max_age, college_name, test_attended, timestamp];
     const userQueryData = await pool.query(userQuery, userQueryParams);
     const token = await generateUserToken(userQueryData.rows[0].id);
     delete userQueryData.passsword;
@@ -46,6 +44,10 @@ const signup = async (req, res) => {
           id: userQueryData.rows[0].id,
           name: userQueryData.rows[0].name,
           email: userQueryData.rows[0].email,
+          min_age: userQueryData.rows[0].min_age,
+          max_age: userQueryData.rows[0].max_age,
+          college_name: userQueryData.rows[0].college_name,
+          test_attended: userQueryData.rows[0].test_attended,
           created_at: userQueryData.rows[0].created_at.toISOString(),
         },
         meta: {

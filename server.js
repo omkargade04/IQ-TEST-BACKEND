@@ -10,6 +10,8 @@ app.use(express.urlencoded({ extended: true }));
 
 
 //ENDPOINTS
+app.use("/api/user", require("./routes/user.routes"));
+app.use("/api/admin", require("./routes/admin.routes"));
 
 app.get("/", (req, res) => {
     res.status(200).json(`Server is running...`);

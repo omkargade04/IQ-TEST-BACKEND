@@ -1,5 +1,4 @@
 const pool = require("../config/db.js");
-const { Snowflake } = require("@theinternetfolks/snowflake");
 const jwt = require("jsonwebtoken");
 
 const validateEmail = (email) => {
